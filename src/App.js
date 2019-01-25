@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import "./App.css";
+import Validation from './Validation/Validation';
+import Char from './Char/Char';
 
 class App extends Component {
   state = {
@@ -13,7 +15,28 @@ class App extends Component {
     });
   };
 
+  deleteClickedCharHandler = (index) =>{
+    let chars = [...this.state.input];
+    if(index < this.state.input.length){
+      chars.splice(index,1);
+    }
+
+    this.setState({
+      input: chars.join('')
+    })
+}
+
   render() {
+
+    const charCompList = this.state.input
+    .split('')
+    .map((ch,i) => {
+      return <Char
+                key={i} 
+                char={ch}
+                click={this.deleteClickedCharHandler.bind(this,i)} />
+})
+
     return (
       <div className="App">
         <ol>
@@ -49,6 +72,10 @@ class App extends Component {
         <p>Hint: Keep in mind that JavaScript strings are basically arrays!</p>
 
         <input value={this.state.input} changed={this.inputChangedHandler} />
+        <p>{this.state.input.length}</p>
+        <Validation text={this.state.input}/>
+        <hr/>
+        {charCompList}
       </div>
     );
   }
