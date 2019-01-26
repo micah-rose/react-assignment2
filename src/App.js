@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./App.css";
-import ValidationComponent from "./Validation/Validation";
-import CharComponent from "./Char/Char";
+import Validation from "./Validation/Validation";
+import Char from "./Char/Char";
 
 class App extends Component {
   state = {
@@ -9,30 +9,26 @@ class App extends Component {
   };
 
   inputChangedHandler = event => {
-    const inputText = event.target.value;
+    //const inputText = event.target.value;
     this.setState({
-      input: inputText
+      input: event.target.value
     });
   };
 
-  deleteClickedCharHandler = index => {
-    let chars = [...this.state.input];
-    if (index < this.state.input.length) {
-      chars.splice(index, 1);
-    }
-
-    this.setState({
-      input: chars.join("")
-    });
+  deleteCharHandler = index => {
+    const text = this.state.input.split("");
+    text.splice(index, 1);
+    const updatedText = text.join("");
+    this.setState({ input: updatedText });
   };
 
   render() {
-    const charCompList = this.state.input.split("").map((ch, i) => {
+    const charList = this.state.input.split("").map((ch, index) => {
       return (
-        <CharComponent
-          key={i}
-          char={ch}
-          click={this.deleteClickedCharHandler.bind(this, i)}
+        <Char
+          key={index}
+          character={ch}
+          clicked={() => this.deleteCharHandler(index)}
         />
       );
     });
@@ -71,11 +67,15 @@ class App extends Component {
         </ol>
         <p>Hint: Keep in mind that JavaScript strings are basically arrays!</p>
 
-        <input value={this.state.input} changed={this.inputChangedHandler} />
-        <p>{this.state.input.length}</p>
-        <ValidationComponent text={this.state.input} />
+        <input
+          type="text"
+          value={this.state.input}
+          onChange={this.inputChangedHandler}
+        />
+        <p>{this.state.input.length} characters</p>
+        <Validation inputLength={this.state.input.length} />
         <hr />
-        {charCompList}
+        {charList}
       </div>
     );
   }
